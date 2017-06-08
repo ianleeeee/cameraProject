@@ -13,7 +13,7 @@ public class Pictures {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		try {
 			Pictures test = new Pictures();
-			System.out.println(test.findRed());
+			System.out.println(test.getRedPercentage());
 		} catch (FailedToRunRaspistillException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -32,18 +32,15 @@ public class Pictures {
 		//}
 	}
 
-	public double findRed() {
+	public double getRedPercentage() {
 		// returns the percentage of red pixels / total pixels
-
 		int numPixels = (pixels.length) / 3;
 		boolean[] redPixels = new boolean[numPixels];
 		for (int i = 0; i < pixels.length; i += 3) {
-
 			int[] currentPixel = new int[3];
 			for (int j = 0; j < 3; j++) {
 				currentPixel[j] = pixels[i + j];
 			}
-
 			int red = currentPixel[0];
 			int green = currentPixel[1];
 			int blue = currentPixel[2];
@@ -60,12 +57,9 @@ public class Pictures {
 			} else {
 				redPixels[i / 3] = true;
 			}
-
 		}
-
 		int trueRedPixels = 0;
 		for (boolean pixel : redPixels)
-
 		{
 			if (pixel) {
 				trueRedPixels++;
@@ -73,7 +67,7 @@ public class Pictures {
 		}
 
 		double redPercentage = (double)trueRedPixels / numPixels;
-		redPercentage = Math.round(redPercentage * 100);
-		return redPercentage / 100;
+	//	redPercentage = Math.round(redPercentage * 100);
+		return redPercentage;
 	}
 }
