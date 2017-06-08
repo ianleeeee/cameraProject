@@ -7,48 +7,73 @@ import javax.swing.plaf.synth.SynthScrollBarUI;
 import com.hopding.jrpicam.RPiCamera;
 import com.hopding.jrpicam.exceptions.FailedToRunRaspistillException;
 
-public class pictures {
-	int [] pixels;
+public class Pictures {
+	int[] pixels;
+
 	public static void main(String[] args) throws IOException, InterruptedException {
 		try {
-			new pictures();
+			Pictures test = new Pictures();
+			System.out.println(test.findRed());
 		} catch (FailedToRunRaspistillException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	pictures() throws FailedToRunRaspistillException, IOException, InterruptedException{
-		RPiCamera cam = new RPiCamera();
-		pixels = cam.takeStillAsRGB(25,25,false);	
-		//for(int i : pixels){
+
+	Pictures() throws FailedToRunRaspistillException, IOException, InterruptedException {
+		RPiCamera cam = new RPiCamera("/home/pi/Desktop");
+		cam.setWidth(50).setHeight(50);
+		pixels = cam.takeStillAsRGB(50, 50, false);
+		//cam.takeStill("pic.jpg");
+
+		//for (int i : pixels) {
 			//System.out.println(i);
 		//}
 	}
-	public double findRed(){
-		//returns the percentage of red pixels / total pixels
-		int numPixels = (pixels.length)/3;
-		for (int i = 0; i < numPixels; i++) {
-			int run = 0;
+
+	public double findRed() {
+		// returns the percentage of red pixels / total pixels
+
+		int numPixels = (pixels.length) / 3;
+		boolean[] redPixels = new boolean[numPixels];
+		for (int i = 0; i < pixels.length; i += 3) {
+
 			int[] currentPixel = new int[3];
-			for(int val :pixels){
-				if(run%3==0){
-					run = 0;
-				}
-				currentPixel[run] = val;
+			for (int j = 0; j < 3; j++) {
+				currentPixel[j] = pixels[i + j];
 			}
+
 			int red = currentPixel[0];
 			int green = currentPixel[1];
 			int blue = currentPixel[2];
 			int biggest = 0;
-			if(blue>= green){
+			if (blue >= green) {
 				biggest = blue;
+			} else {
+				biggest = green;
 			}
-			else{
-				biggest  = green;
+			int actualRed = red - biggest;
+			// is 25 a good threshold??
+			if (actualRed < 15) {
+				redPixels[i / 3] = false;
+			} else {
+				redPixels[i / 3] = true;
+			}
+
+		}
+
+		int trueRedPixels = 0;
+		for (boolean pixel : redPixels)
+
+		{
+			if (pixel) {
+				trueRedPixels++;
 			}
 		}
-		return 0;
+
+		double redPercentage = (double)trueRedPixels / numPixels;
+		redPercentage = Math.round(redPercentage * 100);
+		return redPercentage / 100;
 	}
-	
 }
