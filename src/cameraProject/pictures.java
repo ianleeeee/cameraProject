@@ -25,7 +25,6 @@ public class Pictures {
 
 	Pictures(int width, int height) throws FailedToRunRaspistillException, IOException, InterruptedException {
 		RPiCamera cam = new RPiCamera("/home/pi/Desktop");
-		// cam.setWidth(50).setHeight(50);
 		pixels = cam.takeStillAsRGB(width, height, false);
 	}
 
